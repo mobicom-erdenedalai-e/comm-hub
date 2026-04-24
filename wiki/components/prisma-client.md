@@ -1,22 +1,21 @@
-# Prisma Schema
+# Prisma Client Singleton
 
-**File:** `prisma/schema.prisma`
-**Purpose:** Database schema defining User, Client, Integration, and Artifact tables.
+**File:** `src/lib/prisma.ts`
+**Purpose:** Singleton PrismaClient instance that avoids connection pool exhaustion during Next.js hot-reload.
 **Created:** 2026-04-24
 
-## Models
+## What it does
+Exports a single `prisma` instance reused across all API routes. In development, stores the instance on `globalThis` so it persists across hot-reload module re-evaluations. In production, creates one instance per process.
 
-| Model | Purpose |
-|-------|---------|
-| User | GitHub OAuth user record |
-| Client | A client project with tone/language settings |
-| Integration | Per-client connector config (GitHub, Jira, Slack) stored as JSON |
-| Artifact | Generated communication artifact with content and metadata |
-
-## Key decisions
-- `Integration.config` is `Json` — flexible per-connector shape without extra tables
-- Cascade deletes on Integration and Artifact when Client is deleted
-- GitHub token NOT stored in Integration.config (injected from env at runtime)
+## Interface
+```typescript
+import { prisma } from '@/lib/prisma'
+// prisma is a PrismaClient — use directly:
+const users = await prisma.user.findMany()
+```
 
 ## Dependencies
-- [[architecture/decisions/ADR-003-postgresql]]
+- [[components/prisma-client]] (schema — Task 3)
+
+## Known limitations
+- Requires DATABASE_URL to be set (or Prisma config url). Will throw at runtime if not configured.
