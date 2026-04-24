@@ -1,0 +1,118 @@
+<h2>Design — Section 1: Architecture & Tech Stack</h2>
+<p class="subtitle">Does this stack and structure work for your team?</p>
+
+<div style="max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+
+  <!-- Tech Stack -->
+  <div class="section">
+    <div class="label" style="margin-bottom: 10px;">TECH STACK</div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+      <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px 16px; font-size: 12px; text-align: center; min-width: 100px;">
+        <div style="font-size: 20px;">⚡</div>
+        <div style="font-weight: 700;">Next.js 14</div>
+        <div style="color: #777; font-size: 10px;">Web app + API routes</div>
+      </div>
+      <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px 16px; font-size: 12px; text-align: center; min-width: 100px;">
+        <div style="font-size: 20px;">🔷</div>
+        <div style="font-weight: 700;">TypeScript</div>
+        <div style="color: #777; font-size: 10px;">Type safety</div>
+      </div>
+      <div style="background: #f0fff7; border: 1px solid #a0e0b8; border-radius: 8px; padding: 10px 16px; font-size: 12px; text-align: center; min-width: 100px;">
+        <div style="font-size: 20px;">🐙</div>
+        <div style="font-weight: 700;">GitHub Models API</div>
+        <div style="color: #777; font-size: 10px;">GPT-4o via GH token</div>
+      </div>
+      <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px 16px; font-size: 12px; text-align: center; min-width: 100px;">
+        <div style="font-size: 20px;">🐘</div>
+        <div style="font-weight: 700;">PostgreSQL</div>
+        <div style="color: #777; font-size: 10px;">Clients, history, config</div>
+      </div>
+      <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px 16px; font-size: 12px; text-align: center; min-width: 100px;">
+        <div style="font-size: 20px;">🔐</div>
+        <div style="font-weight: 700;">GitHub OAuth</div>
+        <div style="color: #777; font-size: 10px;">Auth (already have GH)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Flow -->
+  <div class="section">
+    <div class="label" style="margin-bottom: 10px;">DATA FLOW</div>
+    <div style="display: flex; align-items: center; gap: 0; overflow-x: auto; padding-bottom: 4px;">
+
+      <div style="background: #f7f8fc; border: 1px solid #dde3f0; border-radius: 8px; padding: 10px 14px; font-size: 11px; text-align: center; min-width: 90px;">
+        <div style="font-size: 18px;">👤</div>
+        <div style="font-weight: 600;">Dev opens<br>CommHub</div>
+      </div>
+      <div style="color: #aaa; font-size: 18px; padding: 0 6px;">→</div>
+
+      <div style="background: #f7f8fc; border: 1px solid #dde3f0; border-radius: 8px; padding: 10px 14px; font-size: 11px; text-align: center; min-width: 90px;">
+        <div style="font-size: 18px;">🏢</div>
+        <div style="font-weight: 600;">Selects client<br>+ date range</div>
+      </div>
+      <div style="color: #aaa; font-size: 18px; padding: 0 6px;">→</div>
+
+      <div style="background: #fff8e1; border: 1px solid #f5c842; border-radius: 8px; padding: 10px 14px; font-size: 11px; text-align: center; min-width: 90px;">
+        <div style="font-size: 18px;">📡</div>
+        <div style="font-weight: 600;">Fetch GitHub<br>Jira · Slack</div>
+      </div>
+      <div style="color: #aaa; font-size: 18px; padding: 0 6px;">→</div>
+
+      <div style="background: #f0fff7; border: 1px solid #a0e0b8; border-radius: 8px; padding: 10px 14px; font-size: 11px; text-align: center; min-width: 90px;">
+        <div style="font-size: 18px;">🤖</div>
+        <div style="font-weight: 600;">GitHub Models<br>generates draft</div>
+      </div>
+      <div style="color: #aaa; font-size: 18px; padding: 0 6px;">→</div>
+
+      <div style="background: #f5f0ff; border: 1px solid #c4b0ff; border-radius: 8px; padding: 10px 14px; font-size: 11px; text-align: center; min-width: 90px;">
+        <div style="font-size: 18px;">✏️</div>
+        <div style="font-weight: 600;">Dev edits<br>+ copies</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Integrations -->
+  <div class="section">
+    <div class="label" style="margin-bottom: 10px;">INTEGRATIONS DETAIL</div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 160px; background: #f7f8fc; border: 1px solid #e0e6f0; border-radius: 8px; padding: 12px 14px; font-size: 11px;">
+        <div style="font-weight: 700; margin-bottom: 6px;">🐙 GitHub API</div>
+        <ul style="margin: 0; padding-left: 14px; color: #555; line-height: 1.7;">
+          <li>Commits by repo + date</li>
+          <li>Merged PRs</li>
+          <li>Open issues summary</li>
+        </ul>
+      </div>
+      <div style="flex: 1; min-width: 160px; background: #f7f8fc; border: 1px solid #e0e6f0; border-radius: 8px; padding: 12px 14px; font-size: 11px;">
+        <div style="font-weight: 700; margin-bottom: 6px;">📋 Jira REST API</div>
+        <ul style="margin: 0; padding-left: 14px; color: #555; line-height: 1.7;">
+          <li>Completed tickets</li>
+          <li>Sprint velocity</li>
+          <li>Blockers / in-progress</li>
+        </ul>
+      </div>
+      <div style="flex: 1; min-width: 160px; background: #f7f8fc; border: 1px solid #e0e6f0; border-radius: 8px; padding: 12px 14px; font-size: 11px;">
+        <div style="font-weight: 700; margin-bottom: 6px;">💬 Slack API</div>
+        <ul style="margin: 0; padding-left: 14px; color: #555; line-height: 1.7;">
+          <li>Channel messages</li>
+          <li>Standup threads</li>
+          <li>Pinned decisions</li>
+        </ul>
+      </div>
+      <div style="flex: 1; min-width: 160px; background: #f7f8fc; border: 1px solid #e0e6f0; border-radius: 8px; padding: 12px 14px; font-size: 11px;">
+        <div style="font-weight: 700; margin-bottom: 6px;">🎙️ Meetings</div>
+        <ul style="margin: 0; padding-left: 14px; color: #555; line-height: 1.7;">
+          <li>Upload transcript file</li>
+          <li>Or paste raw text</li>
+          <li>Auto-summarized</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top: 16px; text-align: center; font-size: 13px; color: #777;">
+  Does Section 1 look right? Any sources to add, remove, or change?
+</div>

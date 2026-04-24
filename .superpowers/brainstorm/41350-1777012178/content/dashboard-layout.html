@@ -1,0 +1,80 @@
+<h2>Dashboard Layout — Which feels right?</h2>
+<p class="subtitle">Both do the same thing — the difference is how your team navigates</p>
+
+<div class="split" style="gap: 20px; align-items: flex-start;">
+
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)" style="flex: 1; cursor: pointer;">
+    <div class="card-body" style="padding: 0;">
+      <div style="background: #1a1f2e; border-radius: 8px 8px 0 0; padding: 10px 14px; display: flex; align-items: center; gap: 8px;">
+        <span style="color: #7c8cf8; font-weight: 700; font-size: 13px;">🐙 CommHub</span>
+        <span style="color: #555; font-size: 11px; margin-left: auto;">Acme Corp ▾</span>
+      </div>
+      <div style="display: flex; border-radius: 0 0 8px 8px; overflow: hidden; border: 1px solid #e0e0e0; border-top: none; min-height: 220px;">
+        <!-- Sidebar -->
+        <div style="width: 130px; background: #f7f8fc; border-right: 1px solid #e0e0e0; padding: 12px 8px; font-size: 11px;">
+          <div style="font-weight: 700; color: #555; margin-bottom: 8px; padding: 0 4px;">GENERATE</div>
+          <div style="background: #7c8cf8; color: white; border-radius: 5px; padding: 5px 8px; margin-bottom: 4px;">📄 Weekly Report</div>
+          <div style="padding: 5px 8px; color: #666; margin-bottom: 4px;">🗒️ Meeting Summary</div>
+          <div style="padding: 5px 8px; color: #666; margin-bottom: 4px;">💬 Status Reply</div>
+          <div style="padding: 5px 8px; color: #666; margin-bottom: 4px;">📦 Handover Doc</div>
+          <div style="font-weight: 700; color: #555; margin: 12px 0 8px; padding: 0 4px;">HISTORY</div>
+          <div style="padding: 5px 8px; color: #888; font-size: 10px;">Apr 20 — Report</div>
+          <div style="padding: 5px 8px; color: #888; font-size: 10px;">Apr 17 — Summary</div>
+        </div>
+        <!-- Main -->
+        <div style="flex: 1; padding: 14px; background: white;">
+          <div style="font-size: 12px; font-weight: 700; color: #333; margin-bottom: 10px;">Weekly Report — Apr 14–20</div>
+          <div style="background: #f7f8fc; border-radius: 6px; padding: 10px; font-size: 11px; color: #555; line-height: 1.6; margin-bottom: 10px;">
+            This week the team completed the payment integration module and resolved 3 critical bugs in the auth flow. Sprint velocity was 42 points...
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <div style="background: #7c8cf8; color: white; border-radius: 5px; padding: 5px 12px; font-size: 11px; font-weight: 600;">Copy</div>
+            <div style="border: 1px solid #ddd; border-radius: 5px; padding: 5px 12px; font-size: 11px; color: #555;">Edit</div>
+            <div style="border: 1px solid #ddd; border-radius: 5px; padding: 5px 12px; font-size: 11px; color: #555;">Regenerate</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding: 10px 4px 4px; text-align: center;">
+        <span style="font-weight: 700; font-size: 13px;">Option A — Sidebar Nav</span>
+        <p style="font-size: 11px; color: #777; margin: 4px 0 0;">Persistent sidebar per client. Switch artifact types in one click.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)" style="flex: 1; cursor: pointer;">
+    <div class="card-body" style="padding: 0;">
+      <div style="background: #1a1f2e; border-radius: 8px 8px 0 0; padding: 10px 14px; display: flex; align-items: center; gap: 8px;">
+        <span style="color: #7c8cf8; font-weight: 700; font-size: 13px;">🐙 CommHub</span>
+      </div>
+      <div style="border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; padding: 14px; background: white; min-height: 220px;">
+        <!-- Client cards row -->
+        <div style="font-size: 11px; font-weight: 700; color: #555; margin-bottom: 8px;">CLIENTS</div>
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <div style="background: #7c8cf8; color: white; border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 600;">Acme Corp</div>
+          <div style="background: #f0f0f0; border-radius: 6px; padding: 5px 12px; font-size: 11px; color: #555;">TechStart</div>
+          <div style="background: #f0f0f0; border-radius: 6px; padding: 5px 12px; font-size: 11px; color: #555;">FinGroup</div>
+          <div style="background: #f0f0f0; border-radius: 6px; padding: 5px 12px; font-size: 11px; color: #555;">+ Add</div>
+        </div>
+        <!-- Action tiles -->
+        <div style="font-size: 11px; font-weight: 700; color: #555; margin-bottom: 8px;">GENERATE FOR ACME CORP</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+          <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; font-weight: 600;">📄 Weekly Report<br><span style="font-weight: 400; color: #888; font-size: 10px;">Last: Apr 20</span></div>
+          <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; font-weight: 600;">🗒️ Meeting Summary<br><span style="font-weight: 400; color: #888; font-size: 10px;">Last: Apr 19</span></div>
+          <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; font-weight: 600;">💬 Status Reply<br><span style="font-weight: 400; color: #888; font-size: 10px;">On demand</span></div>
+          <div style="background: #f0f4ff; border: 1px solid #c4ccff; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; font-weight: 600;">📦 Handover Doc<br><span style="font-weight: 400; color: #888; font-size: 10px;">End of project</span></div>
+        </div>
+      </div>
+      <div style="padding: 10px 4px 4px; text-align: center;">
+        <span style="font-weight: 700; font-size: 13px;">Option B — Client-first Grid</span>
+        <p style="font-size: 11px; color: #777; margin: 4px 0 0;">Start by selecting a client, then pick the artifact. Better when juggling multiple clients.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top: 20px; text-align: center; font-size: 13px; color: var(--text-muted, #777);">
+  Click your preferred layout above, or just tell me in the terminal.
+</div>
