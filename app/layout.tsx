@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getServerSession } from 'next-auth'
 import { authOptions } from './api/auth/[...nextauth]/auth'
-import SessionProvider from '@/src/components/SessionProvider'
+import SessionProvider from '@/components/SessionProvider'
 
 export const metadata: Metadata = { title: 'CommHub' }
 
