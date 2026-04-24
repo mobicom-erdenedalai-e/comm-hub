@@ -1,0 +1,33 @@
+{
+  "name": "commhub",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.1",
+    "@prisma/client": "^7.8.0",
+    "next": "14.2.35",
+    "next-auth": "^4.24.14",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@vitest/coverage-v8": "^4.1.5",
+    "prisma": "^7.8.0",
+    "typescript": "^5",
+    "vitest": "^4.1.5"
+  }
+}
