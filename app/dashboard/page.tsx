@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Sidebar from '@/components/sidebar/Sidebar'
+import ArtifactPanel from '@/components/artifact-panel/ArtifactPanel'
 import type { ArtifactType } from '@/lib/types'
 
 export default function DashboardPage() {
@@ -15,11 +16,13 @@ export default function DashboardPage() {
         onClientChange={setClientId}
         onArtifactTypeChange={setArtifactType}
       />
-      <main style={{ flex: 1, padding: '24px' }}>
+      <main style={{ flex: 1, padding: '32px' }}>
         {!clientId ? (
-          <p style={{ color: '#888' }}>Select a client to get started.</p>
+          <p style={{ color: '#888', marginTop: '80px', textAlign: 'center' }}>
+            Select a client from the sidebar to get started.
+          </p>
         ) : (
-          <p style={{ color: '#888' }}>ArtifactPanel coming next…</p>
+          <ArtifactPanel clientId={clientId} artifactType={artifactType} />
         )}
       </main>
     </div>
