@@ -11,15 +11,21 @@ export default function DashboardPage() {
   const [artifactType, setArtifactType] = useState<ArtifactType>('weekly-report')
   const [selectedArtifactId, setSelectedArtifactId] = useState<string | null>(null)
   const [historicDraft, setHistoricDraft] = useState<string | null>(null)
+  const [historyError, setHistoryError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!selectedArtifactId || !clientId) { setHistoricDraft(null); return }
+    setHistoryError(null)
     fetch(`/api/artifacts?clientId=${clientId}`)
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`Failed to load artifact (${r.status})`)
+        return r.json()
+      })
       .then((arts: Artifact[]) => {
         const found = arts.find(a => a.id === selectedArtifactId)
         if (found) setHistoricDraft(found.content)
       })
+      .catch(err => setHistoryError(err instanceof Error ? err.message : 'Failed to load artifact'))
   }, [selectedArtifactId, clientId])
 
   function handleClientChange(id: string) {
@@ -44,6 +50,9 @@ export default function DashboardPage() {
           </p>
         ) : (
           <>
+            {historyError && (
+              <p style={{ color: '#c0392b', fontSize: '13px', marginBottom: '16px' }}>{historyError}</p>
+            )}
             {historicDraft && (
               <div style={{ marginBottom: '24px' }}>
                 <div style={{ fontSize: '12px', color: '#888', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>

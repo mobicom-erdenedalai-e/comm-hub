@@ -32,6 +32,6 @@ describe('generateWithGitHubModels', () => {
   it('throws when GITHUB_TOKEN is not set', async () => {
     delete process.env.GITHUB_TOKEN
     await expect(generateWithGitHubModels({ prompt: 'Hello' }))
-      .rejects.toThrow('GITHUB_TOKEN environment variable is not set')
+      .rejects.toThrow('Missing required environment variable: GITHUB_TOKEN')
   })
 })

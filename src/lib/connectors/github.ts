@@ -26,7 +26,7 @@ export async function fetchGitHubActivity(
         title: c.commit.message.split('\n')[0],
         description: c.commit.message,
         url: c.html_url,
-        date: new Date(c.commit.author?.date ?? ''),
+        date: new Date(c.commit.author?.date ?? c.commit.committer?.date ?? Date.now()),
         author: c.commit.author?.name,
       })
     }

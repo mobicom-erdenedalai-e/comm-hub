@@ -14,11 +14,15 @@
   },
   "dependencies": {
     "@octokit/rest": "^22.0.1",
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@types/pg": "^8.20.0",
     "next": "14.2.35",
     "next-auth": "^4.24.14",
+    "pg": "^8.20.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",

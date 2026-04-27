@@ -1,3 +1,5 @@
+import { env } from '@/lib/env'
+
 export type GenerateOptions = {
   prompt: string
   maxRetries?: number
@@ -5,8 +7,7 @@ export type GenerateOptions = {
 
 export async function generateWithGitHubModels(options: GenerateOptions): Promise<string> {
   const { prompt, maxRetries = 2 } = options
-  const token = process.env.GITHUB_TOKEN
-  if (!token) throw new Error('GITHUB_TOKEN environment variable is not set')
+  const token = env.GITHUB_TOKEN
 
   let lastError: Error | null = null
 
@@ -20,10 +21,13 @@ export async function generateWithGitHubModels(options: GenerateOptions): Promis
           messages: [{ role: 'user', content: prompt }],
           max_tokens: 1500,
         }),
+        signal: AbortSignal.timeout(30_000),
       })
       if (!res.ok) throw new Error(`GitHub Models API error: ${res.status} ${await res.text()}`)
       const data = await res.json()
-      return data.choices[0].message.content as string
+      const content = data?.choices?.[0]?.message?.content
+      if (typeof content !== 'string') throw new Error('Unexpected response shape from GitHub Models API')
+      return content
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error))
       if (attempt < maxRetries) continue

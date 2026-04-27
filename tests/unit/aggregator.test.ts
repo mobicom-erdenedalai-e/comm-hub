@@ -75,7 +75,7 @@ describe('aggregate', () => {
       jira: { baseUrl: 'https://x.atlassian.net', email: 'a@b.com', apiToken: 'tok', projectKey: 'PROJ' },
     }, dateRange)
 
-    expect(bundle.sourcesFailed).toContain('unknown')
+    expect(bundle.sourcesFailed).toContain('github')
     expect(bundle.sourcesUsed).toContain('jira')
   })
 
