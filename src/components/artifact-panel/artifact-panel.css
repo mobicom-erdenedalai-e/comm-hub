@@ -1,0 +1,72 @@
+.artifact-panel { max-width: 760px; }
+
+.artifact-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.artifact-panel-title { font-size: 18px; font-weight: 700; color: #1a1f2e; }
+
+.date-range-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.date-input {
+  padding: 6px 10px;
+  border: 1px solid #dde3f0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #1a1f2e;
+}
+
+.generate-btn {
+  padding: 8px 20px;
+  background: #3b4ef8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.generate-btn:disabled { background: #9ba5fc; cursor: not-allowed; }
+
+.draft-box {
+  background: #f7f8fc;
+  border: 1px solid #dde3f0;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 200px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #1a1f2e;
+  white-space: pre-wrap;
+  margin-bottom: 12px;
+}
+
+.draft-actions { display: flex; gap: 8px; }
+
+.draft-action-btn {
+  padding: 7px 16px;
+  border: 1px solid #dde3f0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: white;
+  color: #333;
+}
+
+.draft-action-btn.primary { background: #3b4ef8; color: white; border-color: #3b4ef8; }
+.draft-action-btn:hover { background: #f0f0f0; }
+.draft-action-btn.primary:hover { background: #2d3de0; }
+
+.sources-note { font-size: 11px; color: #888; margin-top: 8px; }
+.sources-note .failed { color: #e05252; }

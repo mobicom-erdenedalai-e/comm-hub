@@ -1,5 +1,31 @@
 # CommHub Changelog
 
+## Security & Bug Fixes — PR Review (2026-04-27)
+
+- **C1 — Credential encryption:** Added `src/lib/crypto.ts` (AES-256-GCM). Jira `apiToken` and Slack `token` encrypted before storing in `Integration.config`; decrypted on read in `/api/generate`. New env var `CREDENTIAL_ENCRYPTION_KEY` required (64-char hex).
+- **C2 / SSRF — Jira baseUrl validation:** `fetchJiraActivity` now validates `baseUrl` is `https://*.atlassian.net` before making any network request; returns connector error if invalid.
+- **H1 — Zod validation:** Added `src/lib/integration-schemas.ts`; all integration configs validated with per-source zod schemas in POST/PUT `/api/clients`. Unsafe `as` casts in `/api/generate` replaced with `decryptConfig` + typed access via schema types.
+- **H2 — Generate body validation:** `/api/generate` validates `artifactType` enum and `dateRange` (valid dates, from ≤ to) before processing.
+- **H3 — env.ts compliance:** `github-models.ts` updated to use `env.GITHUB_TOKEN` instead of `process.env.GITHUB_TOKEN` directly.
+- **H4 — Security headers:** `next.config.mjs` now exports `headers()` with CSP, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, and HSTS.
+- **H5 — Rate limiting:** Added `src/lib/rate-limit.ts`; `/api/generate` limited to 10 requests/min per user (429 on breach).
+- **I1 — Dashboard fetch error handling:** History artifact fetch in `dashboard/page.tsx` now has `.catch()` with error state displayed to user.
+- **I2 — Aggregator source tracking:** Source names tracked before `Promise.allSettled`; rejected connectors now logged by name (not `'unknown'`).
+- **I3 — GitHub merge commit date:** `github.ts` falls back to `committer.date` then `Date.now()` when `author.date` is absent.
+- **I4 — GitHub Models null check:** `choices[0].message.content` null-checked; descriptive error thrown on unexpected API shape.
+- **Prisma 7 compat:** Schema updated to use `@prisma/adapter-pg`; `prisma.ts` updated to use `PrismaPg` adapter. `env.ts` returns empty string during `NEXT_PHASE=phase-production-build` to allow `next build` without live env vars.
+- **Cleanup:** Removed unused `app/page.module.css` (Next.js boilerplate).
+
+## PR Review Fixes (2026-04-27)
+
+- **Build fix:** renamed `next.config.ts` → `next.config.mjs` (Next.js 14 does not support `.ts` config)
+- **Ownership check:** `POST /api/generate` now uses `findFirst({ where: { id, userId } })` — prevents cross-user data access
+- **JQL injection guard:** Jira connector validates `projectKey` against `/^[A-Z][A-Z0-9_]{1,9}$/` and quotes it in JQL
+- **Type safety:** added `src/types/next-auth.d.ts` module augmentation; removed `session.user as any` cast
+- **Error handling:** `req.json()` in generate route wrapped in try/catch (400 on malformed body)
+- **Settings page:** save() now surfaces network and API errors to the user
+- **Env validation:** added `src/lib/env.ts` — validated getters replace `process.env.X!` non-null assertions
+
 ## Task 20: Full Test Suite & Coverage Check (2026-04-27)
 - All 36 unit tests passing
 - Coverage: 96% statements, 80.28% branches, 100% functions, 96.8% lines

@@ -1,0 +1,53 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  githubId  String   @unique
+  name      String?
+  email     String?
+  image     String?
+  createdAt DateTime @default(now())
+  clients   Client[]
+}
+
+model Client {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  name         String
+  tone         String        @default("formal")
+  language     String        @default("en")
+  format       String        @default("email-prose")
+  createdAt    DateTime      @default(now())
+  integrations Integration[]
+  artifacts    Artifact[]
+}
+
+model Integration {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  source    String
+  config    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Artifact {
+  id            String    @id @default(cuid())
+  clientId      String
+  client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  type          String
+  content       String
+  sourcesUsed   String[]
+  dateRangeFrom DateTime?
+  dateRangeTo   DateTime?
+  createdAt     DateTime  @default(now())
+}
