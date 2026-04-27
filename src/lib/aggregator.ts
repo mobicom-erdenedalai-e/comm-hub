@@ -1,10 +1,12 @@
 import type { ActivityBundle, ConnectorResult, DateRange } from './types'
 import { fetchGitHubActivity } from './connectors/github'
 import { fetchJiraActivity } from './connectors/jira'
+import { fetchSlackActivity } from './connectors/slack'
 
 export type AggregatorConfig = {
   github?: { token: string; owner: string; repo: string }
   jira?: { baseUrl: string; email: string; apiToken: string; projectKey: string }
+  slack?: { token: string; channelId: string }
 }
 
 export async function aggregate(
@@ -16,6 +18,7 @@ export async function aggregate(
 
   if (config.github) tasks.push(fetchGitHubActivity(config.github.token, config.github.owner, config.github.repo, dateRange))
   if (config.jira) tasks.push(fetchJiraActivity(config.jira, dateRange))
+  if (config.slack) tasks.push(fetchSlackActivity(config.slack, dateRange))
 
   const results = await Promise.allSettled(tasks)
 
