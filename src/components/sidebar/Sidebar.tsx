@@ -18,9 +18,10 @@ type Props = {
   selectedArtifactType: ArtifactType
   onClientChange: (id: string) => void
   onArtifactTypeChange: (type: ArtifactType) => void
+  onHistorySelect: (artifactId: string) => void
 }
 
-export default function Sidebar({ selectedClientId, selectedArtifactType, onClientChange, onArtifactTypeChange }: Props) {
+export default function Sidebar({ selectedClientId, selectedArtifactType, onClientChange, onArtifactTypeChange, onHistorySelect }: Props) {
   const [clients, setClients] = useState<Client[]>([])
   const [history, setHistory] = useState<Artifact[]>([])
 
@@ -62,7 +63,7 @@ export default function Sidebar({ selectedClientId, selectedArtifactType, onClie
         <>
           <div className="sidebar-section-label">History</div>
           {history.slice(0, 5).map(a => (
-            <div key={a.id} className="sidebar-history-item">
+            <div key={a.id} className="sidebar-history-item" onClick={() => onHistorySelect(a.id)} style={{ cursor: 'pointer' }}>
               {new Date(a.createdAt).toLocaleDateString('en', { month: 'short', day: 'numeric' })} — {a.type.replace('-', ' ')}
             </div>
           ))}
