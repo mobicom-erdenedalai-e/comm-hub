@@ -5,14 +5,15 @@ import { prisma } from '@/lib/prisma'
 import { aggregate, type AggregatorConfig } from '@/lib/aggregator'
 import { buildPrompt } from '@/lib/prompt-engine'
 import { generateWithGitHubModels } from '@/lib/github-models'
+import { parseMeetingTranscript } from '@/lib/connectors/meeting'
 import type { GenerateRequest, ToneConfig } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body: GenerateRequest = await req.json()
-  const { clientId, artifactType, dateRange, question } = body
+  const body: GenerateRequest & { transcript?: string } = await req.json()
+  const { clientId, artifactType, dateRange, question, transcript } = body
 
   const client = await prisma.client.findUnique({
     where: { id: clientId },
@@ -36,7 +37,9 @@ export async function POST(req: NextRequest) {
     if (integration.source === 'jira') {
       config.jira = integration.config as AggregatorConfig['jira']
     }
-    // slack and meeting connectors will be wired in Tasks 17-18
+    if (integration.source === 'slack') {
+      config.slack = integration.config as AggregatorConfig['slack']
+    }
   }
 
   const parsedRange = {
@@ -45,7 +48,12 @@ export async function POST(req: NextRequest) {
   }
 
   const bundle = await aggregate(clientId, config, parsedRange)
-  const prompt = buildPrompt(artifactType, bundle, tone, { question })
+  if (transcript) {
+    const meetingResult = parseMeetingTranscript(transcript)
+    bundle.items.push(...meetingResult.items)
+    if (meetingResult.items.length > 0) bundle.sourcesUsed.push('meeting')
+  }
+  const prompt = buildPrompt(artifactType, bundle, tone, { question, transcript })
   const draft = await generateWithGitHubModels({ prompt })
 
   const artifact = await prisma.artifact.create({
