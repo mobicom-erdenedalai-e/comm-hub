@@ -38,7 +38,36 @@ describe('buildPrompt', () => {
     expect(prompt).toContain('bullet')
   })
 
-  it('throws for unsupported artifact type', () => {
-    expect(() => buildPrompt('handover-doc' as any, bundle, tone)).not.toThrow()
+  it('builds meeting-summary prompt', () => {
+    const prompt = buildPrompt('meeting-summary', bundle, tone)
+    expect(prompt).toContain('meeting')
+  })
+
+  it('includes transcript in meeting-summary when provided', () => {
+    const prompt = buildPrompt('meeting-summary', bundle, tone, { transcript: 'Alice: great sprint' })
+    expect(prompt).toContain('Alice: great sprint')
+  })
+
+  it('builds status-reply prompt with question', () => {
+    const prompt = buildPrompt('status-reply', bundle, tone, { question: 'Where are we on payments?' })
+    expect(prompt).toContain('Where are we on payments?')
+  })
+
+  it('builds status-reply prompt without question', () => {
+    const prompt = buildPrompt('status-reply', bundle, tone)
+    expect(typeof prompt).toBe('string')
+    expect(prompt.length).toBeGreaterThan(0)
+  })
+
+  it('builds handover-doc prompt', () => {
+    const prompt = buildPrompt('handover-doc', bundle, tone)
+    expect(typeof prompt).toBe('string')
+    expect(prompt.length).toBeGreaterThan(0)
+  })
+
+  it('handles empty items list gracefully', () => {
+    const emptyBundle = { ...bundle, items: [], sourcesUsed: [], sourcesFailed: [] }
+    const prompt = buildPrompt('weekly-report', emptyBundle, tone)
+    expect(typeof prompt).toBe('string')
   })
 })

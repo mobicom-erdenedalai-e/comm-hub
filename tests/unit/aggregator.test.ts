@@ -7,9 +7,13 @@ vi.mock('@/lib/connectors/github', () => ({
 vi.mock('@/lib/connectors/jira', () => ({
   fetchJiraActivity: vi.fn(),
 }))
+vi.mock('@/lib/connectors/slack', () => ({
+  fetchSlackActivity: vi.fn(),
+}))
 
 import { fetchGitHubActivity } from '@/lib/connectors/github'
 import { fetchJiraActivity } from '@/lib/connectors/jira'
+import { fetchSlackActivity } from '@/lib/connectors/slack'
 
 const dateRange = { from: new Date('2026-04-14'), to: new Date('2026-04-20') }
 
@@ -58,5 +62,33 @@ describe('aggregate', () => {
     await aggregate('client-1', { jira: { baseUrl: 'x', email: 'a', apiToken: 't', projectKey: 'P' } }, dateRange)
     expect(fetchGitHubActivity).not.toHaveBeenCalled()
     expect(fetchJiraActivity).toHaveBeenCalledOnce()
+  })
+
+  it('handles a connector that rejects unexpectedly', async () => {
+    vi.mocked(fetchGitHubActivity).mockRejectedValue(new Error('unexpected crash'))
+    vi.mocked(fetchJiraActivity).mockResolvedValue({
+      source: 'jira', items: [{ source: 'jira', type: 'ticket', title: 'PROJ-3: Done', date: new Date() }],
+    })
+
+    const bundle = await aggregate('client-1', {
+      github: { token: 'tok', owner: 'org', repo: 'repo' },
+      jira: { baseUrl: 'https://x.atlassian.net', email: 'a@b.com', apiToken: 'tok', projectKey: 'PROJ' },
+    }, dateRange)
+
+    expect(bundle.sourcesFailed).toContain('unknown')
+    expect(bundle.sourcesUsed).toContain('jira')
+  })
+
+  it('includes slack items when slack config is provided', async () => {
+    vi.mocked(fetchSlackActivity).mockResolvedValue({
+      source: 'slack', items: [{ source: 'slack', type: 'message', title: 'Deployed v2', date: new Date() }],
+    })
+
+    const bundle = await aggregate('client-1', {
+      slack: { token: 'xoxb-tok', channelId: 'C12345' },
+    }, dateRange)
+
+    expect(bundle.sourcesUsed).toContain('slack')
+    expect(bundle.items).toHaveLength(1)
   })
 })

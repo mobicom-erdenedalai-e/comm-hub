@@ -48,6 +48,27 @@ describe('fetchGitHubActivity', () => {
     expect(pr?.title).toBe('feat: add payment module')
   })
 
+  it('excludes PRs outside the date range', async () => {
+    const { Octokit } = await import('@octokit/rest')
+    vi.mocked(Octokit).mockImplementationOnce(function () {
+      return {
+        repos: {
+          listCommits: vi.fn().mockResolvedValue({ data: [] }),
+        },
+        pulls: {
+          list: vi.fn().mockResolvedValue({
+            data: [
+              { title: 'old PR', html_url: 'https://github.com/org/repo/pull/1', merged_at: '2026-04-01T00:00:00Z', user: { login: 'alice' } },
+              { title: 'unmerged PR', html_url: 'https://github.com/org/repo/pull/2', merged_at: null, user: { login: 'bob' } },
+            ],
+          }),
+        },
+      } as any
+    })
+    const result = await fetchGitHubActivity('token', 'org', 'repo', dateRange)
+    expect(result.items.filter(i => i.type === 'pull-request')).toHaveLength(0)
+  })
+
   it('returns error field when Octokit throws', async () => {
     const { Octokit } = await import('@octokit/rest')
     vi.mocked(Octokit).mockImplementationOnce(function () {
