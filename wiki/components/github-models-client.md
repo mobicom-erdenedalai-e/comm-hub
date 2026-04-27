@@ -1,25 +1,36 @@
 # GitHub Models API Client
 
 **File:** `src/lib/github-models.ts`
-**Purpose:** Sends prompts to GitHub Models API (GPT-4o) with automatic retry on failure.
-**Created:** 2026-04-24
+**Last updated:** 2026-04-27
 
-## What it does
-Wraps the GitHub Models API (OpenAI-compatible endpoint at models.inference.ai.azure.com) with retry logic. Returns the first choice's message content as a string.
+## Purpose
+
+Calls GitHub Models (GPT-4o) to generate text from a prompt. Handles retries with exponential backoff.
 
 ## Interface
+
 ```typescript
-export type GenerateOptions = {
-  prompt: string
-  maxRetries?: number  // default 2
-}
-export async function generateWithGitHubModels(options: GenerateOptions): Promise<string>
+generateWithGitHubModels({ prompt: string, maxRetries?: number }): Promise<string>
 ```
 
-## Dependencies
-- Env: `GITHUB_TOKEN` (GitHub PAT with models:read permission)
-- [[architecture/decisions/ADR-002-github-models]]
+- Throws if `GITHUB_TOKEN` is missing
+- Returns the generated text string
+- Retries up to `maxRetries` (default 3) times on transient errors
 
-## Known limitations
-- `max_tokens: 1500` hardcoded
-- No streaming support
+## Configuration
+
+| Setting | Value |
+|---------|-------|
+| Endpoint | `https://models.inference.ai.azure.com/chat/completions` |
+| Model | `gpt-4o` |
+| Max tokens | 1500 |
+| Auth | `Bearer $GITHUB_TOKEN` |
+
+## Security
+
+`GITHUB_TOKEN` is **server-side only** — never passed to the client. Injected at runtime from environment variables.
+
+## Related
+
+- [[architecture/decisions/ADR-002-github-models]]
+- [[api/generate]] — sole caller

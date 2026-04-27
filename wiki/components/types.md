@@ -1,26 +1,33 @@
-# Types
+# Shared Types
 
 **File:** `src/lib/types.ts`
-**Purpose:** Central TypeScript type definitions shared across all modules.
-**Created:** 2026-04-24
+**Last updated:** 2026-04-27
 
-## What it does
-Defines all shared types used by connectors, aggregator, prompt engine, API routes, and UI. No runtime logic — types only.
+## Purpose
 
-## Interface
-```typescript
-export type ArtifactType = 'weekly-report' | 'meeting-summary' | 'status-reply' | 'handover-doc'
-export type ToneConfig = { tone: 'formal'|'friendly'|'technical'; language: string; format: 'email-prose'|'bullet-points' }
-export type ActivityItem = { source: 'github'|'jira'|'slack'|'meeting'; type: string; title: string; description?: string; url?: string; date: Date; author?: string }
-export type ConnectorResult = { source: 'github'|'jira'|'slack'|'meeting'; items: ActivityItem[]; error?: string }
-export type DateRange = { from: Date; to: Date }
-export type ActivityBundle = { clientId: string; dateRange: DateRange; items: ActivityItem[]; sourcesUsed: string[]; sourcesFailed: string[] }
-export type GenerateRequest = { clientId: string; artifactType: ArtifactType; dateRange: DateRange; question?: string }
-export type GenerateResponse = { draft: string; sourcesUsed: string[]; sourcesFailed: string[]; artifactId: string }
-```
+Single source of truth for all TypeScript types shared across the codebase. No logic — pure type definitions only.
 
-## Dependencies
-- None (pure types, no imports)
+## Exported Types
 
-## Known limitations
-- `ActivityItem.date` is a `Date` object — connectors must parse ISO strings to Date before returning
+| Type | Description |
+|------|-------------|
+| `ArtifactType` | Union: `'weekly-report' \| 'meeting-summary' \| 'status-reply' \| 'handover-doc'` |
+| `ToneConfig` | `{ tone, language, format }` — per-client communication style |
+| `ActivityItem` | Normalized item from any data source (github/jira/slack/meeting) |
+| `ConnectorResult` | `{ source, items[], error? }` — return type of all connectors |
+| `DateRange` | `{ from: Date, to: Date }` |
+| `ActivityBundle` | Output of aggregator — all items + metadata |
+| `GenerateRequest` | Body of `POST /api/generate` |
+| `GenerateResponse` | Response from `POST /api/generate` |
+
+## Key Design Decisions
+
+- `ConnectorResult.error` is optional — connectors never throw, they return errors in-band
+- `ActivityItem.source` is a const union matching connector names exactly
+- `ToneConfig.tone` and `.format` are string literal unions enforced at the type level
+
+## Related
+
+- [[components/aggregator]] — consumes `ActivityBundle`, `ConnectorResult`
+- [[components/prompt-engine]] — consumes `ActivityBundle`, `ToneConfig`
+- [[patterns/connector-pattern]] — every connector returns `ConnectorResult`

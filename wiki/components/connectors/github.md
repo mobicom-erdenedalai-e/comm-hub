@@ -1,26 +1,34 @@
 # GitHub Connector
 
 **File:** `src/lib/connectors/github.ts`
-**Purpose:** Fetches commit and merged PR activity from a GitHub repository via the Octokit REST API.
-**Created:** 2026-04-24
+**Last updated:** 2026-04-27
 
-## What it does
-Calls GitHub API to list commits (filtered by since/until) and merged pull requests within the given date range. Normalizes both into `ActivityItem[]`.
+## Purpose
+
+Fetches commits and merged PRs from a GitHub repo for a given date range using the Octokit SDK.
 
 ## Interface
+
 ```typescript
-export async function fetchGitHubActivity(
-  token: string,
-  owner: string,
-  repo: string,
-  dateRange: DateRange
-): Promise<ConnectorResult>
+fetchGitHubActivity(token: string, owner: string, repo: string, dateRange: DateRange): Promise<ConnectorResult>
 ```
 
-## Dependencies
-- `@octokit/rest` — GitHub REST API client
-- [[components/types]] — ActivityItem, ConnectorResult, DateRange
+## What it fetches
 
-## Known limitations
-- PR list is capped at 50 items sorted by updated_at — busy repos may miss some merged PRs
-- Requires `repo` OAuth scope (set in Task 5 NextAuth config)
+| Data | Endpoint | Normalized as |
+|------|----------|---------------|
+| Commits | `repos.listCommits` (since/until) | `type: 'commit'` |
+| Merged PRs | `pulls.list` (filtered by `merged_at` in range) | `type: 'pull-request'` |
+
+## Error handling
+
+Never throws. Returns `{ source: 'github', items: [], error: String(error) }` on any failure.
+
+## Security
+
+Token passed per-call (from `process.env.GITHUB_TOKEN` injected server-side). Never stored in DB per-client.
+
+## Related
+
+- [[patterns/connector-pattern]]
+- [[components/aggregator]]

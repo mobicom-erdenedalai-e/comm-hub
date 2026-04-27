@@ -1,21 +1,38 @@
 # Jira Connector
 
 **File:** `src/lib/connectors/jira.ts`
-**Purpose:** Fetches completed Jira ticket activity via Jira REST API v3.
-**Created:** 2026-04-24
+**Last updated:** 2026-04-27
 
-## What it does
-Queries Jira Cloud's search endpoint with a JQL filter for Done tickets updated within the date range. Normalizes to ActivityItem[].
+## Purpose
+
+Fetches recently completed Jira issues via the REST API v3 using JQL.
 
 ## Interface
+
 ```typescript
-export type JiraConfig = { baseUrl: string; email: string; apiToken: string; projectKey: string }
-export async function fetchJiraActivity(config: JiraConfig, dateRange: DateRange): Promise<ConnectorResult>
+fetchJiraActivity(config: JiraConfig, dateRange: DateRange): Promise<ConnectorResult>
 ```
 
-## Dependencies
-- [[components/types]] — ActivityItem, ConnectorResult, DateRange
+```typescript
+type JiraConfig = {
+  baseUrl: string      // e.g. https://myorg.atlassian.net
+  email: string
+  apiToken: string
+  projectKey: string
+}
+```
 
-## Known limitations
-- Jira Cloud only (Basic auth with API token)
-- Capped at 50 results per query
+## Query
+
+JQL: `project = {KEY} AND statusCategory = Done AND updated >= "{from}" ORDER BY updated DESC`
+
+Uses HTTP Basic auth (`email:apiToken` base64).
+
+## Error handling
+
+Never throws. Returns error field on network or API failure.
+
+## Related
+
+- [[patterns/connector-pattern]]
+- [[components/aggregator]]

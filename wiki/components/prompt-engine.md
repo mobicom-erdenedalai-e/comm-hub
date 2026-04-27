@@ -1,25 +1,48 @@
 # Prompt Engine
 
 **File:** `src/lib/prompt-engine.ts`
-**Purpose:** Builds artifact-specific prompts from an ActivityBundle and ToneConfig.
-**Created:** 2026-04-24
+**Last updated:** 2026-04-27
 
-## What it does
-Dispatches to a private builder function per artifact type. Each builder constructs a prompt that instructs GPT-4o to produce the artifact. Tone and format instructions are injected from lookup maps.
+## Purpose
+
+Turns an `ActivityBundle` + client `ToneConfig` + artifact type into a ready-to-send prompt string for the AI model.
 
 ## Interface
+
 ```typescript
-export function buildPrompt(
+buildPrompt(
   type: ArtifactType,
   bundle: ActivityBundle,
   tone: ToneConfig,
-  extra?: { question?: string; transcript?: string }
+  extras?: { question?: string; transcript?: string }
 ): string
 ```
 
-## Dependencies
-- [[components/types]] — ArtifactType, ActivityBundle, ToneConfig
+## Artifact Types → Builders
 
-## Known limitations
-- `extra.question` used only by status-reply
-- `extra.transcript` used only by meeting-summary
+| ArtifactType | Private builder | Extra context used |
+|---|---|---|
+| `weekly-report` | `weeklyReportPrompt` | — |
+| `meeting-summary` | `meetingSummaryPrompt` | `transcript` |
+| `status-reply` | `statusReplyPrompt` | `question` |
+| `handover-doc` | `handoverDocPrompt` | — |
+
+## Tone & Format Injection
+
+Two lookup maps translate enum values to natural-language instructions:
+
+```typescript
+TONE_TEXT: { formal: 'formal and professional', friendly: 'warm and friendly', technical: 'technical and precise' }
+FORMAT_TEXT: { 'email-prose': 'well-structured prose suitable for email', 'bullet-points': 'concise bullet points' }
+```
+
+These phrases are injected into every prompt so the model applies the right style.
+
+## Design Principle
+
+See [[patterns/prompt-template-pattern]] — each prompt includes: role, tone/format instructions, activity summary, and specific task instruction.
+
+## Related
+
+- [[components/types]] — `ArtifactType`, `ToneConfig`, `ActivityBundle`
+- [[api/generate]] — calls `buildPrompt` after aggregation

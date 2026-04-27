@@ -1,25 +1,53 @@
 # Aggregator
 
 **File:** `src/lib/aggregator.ts`
-**Purpose:** Calls all configured connectors in parallel and merges their results into an ActivityBundle.
-**Created:** 2026-04-24
+**Last updated:** 2026-04-27
 
-## What it does
-Accepts an AggregatorConfig (which connectors to call and their configs), calls them via Promise.allSettled, and produces a unified ActivityBundle with items sorted by date. Connectors that return an error field go into sourcesFailed; successful ones go into sourcesUsed.
+## Purpose
+
+Orchestrates all configured connectors in parallel and merges their results into a single `ActivityBundle`. Uses `Promise.allSettled` so one failing connector never blocks the others.
 
 ## Interface
+
 ```typescript
-export type AggregatorConfig = {
-  github?: { token: string; owner: string; repo: string }
-  jira?: { baseUrl: string; email: string; apiToken: string; projectKey: string }
-}
-export async function aggregate(clientId: string, config: AggregatorConfig, dateRange: DateRange): Promise<ActivityBundle>
+aggregate(clientId: string, config: AggregatorConfig, dateRange: DateRange): Promise<ActivityBundle>
 ```
 
-## Dependencies
-- [[components/connectors/github]] — GitHub commits/PRs
-- [[components/connectors/jira]] — Jira tickets
-- [[components/types]] — ActivityBundle, DateRange
+### AggregatorConfig
 
-## Known limitations
-- Only GitHub and Jira connectors currently wired. Slack/Meeting added in Tasks 17-18.
+```typescript
+type AggregatorConfig = {
+  github?: { token: string; owner: string; repo: string }
+  jira?:   { baseUrl: string; email: string; apiToken: string; projectKey: string }
+  slack?:  { token: string; channelId: string }
+}
+```
+
+Only connectors with a config entry are called.
+
+## Failure Handling
+
+Each connector result is checked for the optional `error` field:
+- `error` present → source added to `bundle.sourcesFailed`
+- `error` absent → items merged into bundle, source added to `bundle.sourcesUsed`
+- Promise rejects entirely → source pushed as `'unknown'` into `sourcesFailed`
+
+The prompt engine and UI both surface `sourcesFailed` so the user knows which integrations were unavailable.
+
+## Output: ActivityBundle
+
+```typescript
+{
+  clientId: string
+  dateRange: DateRange
+  items: ActivityItem[]   // sorted by date desc
+  sourcesUsed: string[]
+  sourcesFailed: string[]
+}
+```
+
+## Related
+
+- [[components/connectors/github]], [[components/connectors/jira]], [[components/connectors/slack]], [[components/connectors/meeting]]
+- [[patterns/connector-pattern]]
+- [[api/generate]] — calls aggregate() on every request

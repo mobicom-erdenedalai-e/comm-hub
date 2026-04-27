@@ -1,7 +1,7 @@
 # Architecture Overview
 
 **Project:** CommHub — AI Communication Hub
-**Last updated:** 2026-04-24
+**Last updated:** 2026-04-27
 **Source:** [[raw-sources/karpathy-llm-wiki]] pattern applied to [[../docs/superpowers/specs/2026-04-24-ai-communication-hub-design]]
 
 ## What This Project Does
@@ -59,7 +59,7 @@ An internal Next.js web app for a software outsourcing team. It pulls activity f
 
 | Phase | Scope | Status |
 |-------|-------|--------|
-| 1 | GitHub + Jira + Weekly Report + Dashboard | 🔲 planned |
-| 2 | Slack + Meeting Summary | 🔲 planned |
-| 3 | Status Reply + Handover Doc + Settings page | 🔲 planned |
-| 4 | Artifact history + Tone settings UI | 🔲 planned |
+| 1 | GitHub + Jira + Weekly Report + Dashboard | ✅ complete |
+| 2 | Slack + Meeting Summary | ✅ complete |
+| 3 | Status Reply + Handover Doc + Settings page | ✅ complete |
+| 4 | Artifact history + Tone settings UI | ✅ complete |

@@ -1,21 +1,38 @@
 # Prisma Client Singleton
 
 **File:** `src/lib/prisma.ts`
-**Purpose:** Singleton PrismaClient instance that avoids connection pool exhaustion during Next.js hot-reload.
-**Created:** 2026-04-24
+**Last updated:** 2026-04-27
 
-## What it does
-Exports a single `prisma` instance reused across all API routes. In development, stores the instance on `globalThis` so it persists across hot-reload module re-evaluations. In production, creates one instance per process.
+## Purpose
 
-## Interface
+Exports a single `PrismaClient` instance for the entire app. Prevents multiple connections during Next.js hot-reload in development.
+
+## Pattern
+
 ```typescript
-import { prisma } from '@/lib/prisma'
-// prisma is a PrismaClient — use directly:
-const users = await prisma.user.findMany()
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ ... })
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 ```
 
-## Dependencies
-- [[components/prisma-client]] (schema — Task 3)
+- In production: a new client is created once per Lambda/process
+- In development: the instance is cached on `globalThis` to survive hot-reloads
 
-## Known limitations
-- Requires DATABASE_URL to be set (or Prisma config url). Will throw at runtime if not configured.
+## Schema Models
+
+| Model | Key fields |
+|-------|-----------|
+| `User` | `id` (cuid), `githubId`, `email` |
+| `Client` | `userId`, `name`, `tone`, `language`, `format` |
+| `Integration` | `clientId`, `source` (github/jira/slack), `config` (Json) |
+| `Artifact` | `clientId`, `type`, `content`, `sourcesUsed`, `dateRangeFrom/To` |
+
+## Prisma 7.x Note
+
+Config in `prisma.config.ts` (not in `schema.prisma`). The `datasource` block in `schema.prisma` has **no `url` field** — that moved to `prisma.config.ts` which reads `DATABASE_URL` via `dotenv`.
+
+## Related
+
+- [[architecture/decisions/ADR-003-postgresql]]
+- [[api/clients]] — main consumer for CRUD
+- [[api/generate]] — creates `Artifact` records
