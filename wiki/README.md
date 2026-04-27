@@ -17,7 +17,7 @@ This wiki follows the [[raw-sources/karpathy-llm-wiki|Karpathy LLM Wiki pattern]
 **If you are a developer opening Obsidian:**
 - Start at [[architecture/overview]] for the big picture
 - Use `[[wiki-links]]` to navigate between pages
-- The `changelog/` folder shows what changed and why, task by task
+- The `CHANGELOG.md` shows what changed and why, task by task
 
 ---
 
@@ -30,16 +30,29 @@ This wiki follows the [[raw-sources/karpathy-llm-wiki|Karpathy LLM Wiki pattern]
 - [[architecture/decisions/ADR-003-postgresql]] — Why PostgreSQL + Prisma
 - [[architecture/decisions/ADR-004-github-oauth]] — Why GitHub OAuth
 
-### Components
+### Core Library (`src/lib/`)
 - [[components/types]] — Shared TypeScript types
-- [[components/prisma-client]] — DB singleton
-- [[components/github-models-client]] — AI API client
+- [[components/prisma-client]] — DB singleton (Prisma 7.x pattern)
+- [[components/github-models-client]] — AI API client (GPT-4o via GitHub Models)
 - [[components/aggregator]] — Parallel connector orchestration
 - [[components/prompt-engine]] — Artifact prompt templates
-- [[components/connectors/github]] — GitHub connector
-- [[components/connectors/jira]] — Jira connector
-- [[components/connectors/slack]] — Slack connector
-- [[components/connectors/meeting]] — Meeting transcript parser
+
+### Connectors (`src/lib/connectors/`)
+- [[components/connectors/github]] — Commits + merged PRs via Octokit
+- [[components/connectors/jira]] — Completed tickets via Jira REST API v3
+- [[components/connectors/slack]] — Channel messages via conversations.history
+- [[components/connectors/meeting]] — Meeting transcript parser (pure function)
+
+### UI Components
+- [[components/ui/sidebar]] — Client selector, artifact nav, history list
+- [[components/ui/artifact-panel]] — Date range, generate, draft display, copy
+- [[components/ui/banner]] — Inline error/warning display
+- [[components/ui/settings-page]] — Add client + integration config form
+
+### API Routes
+- [[api/generate]] — POST /api/generate — full generation pipeline
+- [[api/clients]] — GET/POST /api/clients, PUT/DELETE /api/clients/[id]
+- [[api/artifacts]] — GET /api/artifacts?clientId=...
 
 ### Patterns
 - [[patterns/connector-pattern]] — How every data source connector is structured
@@ -47,9 +60,6 @@ This wiki follows the [[raw-sources/karpathy-llm-wiki|Karpathy LLM Wiki pattern]
 
 ### Raw Sources (immutable)
 - [[raw-sources/karpathy-llm-wiki]] — Foundational pattern for this wiki
-
-### Changelog
-*(populated by subagents as tasks complete)*
 
 ---
 
