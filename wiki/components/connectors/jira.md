@@ -22,15 +22,19 @@ type JiraConfig = {
 }
 ```
 
+## Input validation
+
+`projectKey` is validated against `/^[A-Z][A-Z0-9_]{1,9}$/` before use. Returns `{ source: 'jira', items: [], error: 'Invalid projectKey format' }` if the key fails — prevents JQL injection.
+
 ## Query
 
-JQL: `project = {KEY} AND statusCategory = Done AND updated >= "{from}" ORDER BY updated DESC`
+JQL: `project = "{KEY}" AND status = Done AND updated >= "{from}" AND updated <= "{to}"`
 
-Uses HTTP Basic auth (`email:apiToken` base64).
+`projectKey` is quoted in the JQL string. Uses HTTP Basic auth (`email:apiToken` base64). Results capped at 50.
 
 ## Error handling
 
-Never throws. Returns error field on network or API failure.
+Never throws. Returns error field on network, API, or validation failure.
 
 ## Related
 

@@ -20,6 +20,8 @@ Form for adding a new client with integration configuration. On save, POSTs to `
 
 - Save button disabled if name is blank
 - On success: shows "Saved!" for 1.2s then navigates to `/dashboard`
+- On failure: displays error message below the save button; button re-enables
+- Network errors and non-2xx responses are caught and surfaced to the user (no silent failures)
 - Integration sections are optional — only populated ones are sent
 
 ## Security note

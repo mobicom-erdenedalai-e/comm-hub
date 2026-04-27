@@ -1,5 +1,15 @@
 # CommHub Changelog
 
+## PR Review Fixes (2026-04-27)
+
+- **Build fix:** renamed `next.config.ts` → `next.config.mjs` (Next.js 14 does not support `.ts` config)
+- **Ownership check:** `POST /api/generate` now uses `findFirst({ where: { id, userId } })` — prevents cross-user data access
+- **JQL injection guard:** Jira connector validates `projectKey` against `/^[A-Z][A-Z0-9_]{1,9}$/` and quotes it in JQL
+- **Type safety:** added `src/types/next-auth.d.ts` module augmentation; removed `session.user as any` cast
+- **Error handling:** `req.json()` in generate route wrapped in try/catch (400 on malformed body)
+- **Settings page:** save() now surfaces network and API errors to the user
+- **Env validation:** added `src/lib/env.ts` — validated getters replace `process.env.X!` non-null assertions
+
 ## Task 20: Full Test Suite & Coverage Check (2026-04-27)
 - All 36 unit tests passing
 - Coverage: 96% statements, 80.28% branches, 100% functions, 96.8% lines
