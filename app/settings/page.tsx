@@ -20,6 +20,7 @@ export default function SettingsPage() {
   const [form, setForm] = useState<FormState>(DEFAULT)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   function set(key: keyof FormState, value: string) {
@@ -28,6 +29,7 @@ export default function SettingsPage() {
 
   async function save() {
     setSaving(true)
+    setError(null)
     const integrations: Integration[] = []
     if (form.githubOwner && form.githubRepo)
       integrations.push({ source: 'github', config: { owner: form.githubOwner, repo: form.githubRepo } })
@@ -36,13 +38,23 @@ export default function SettingsPage() {
     if (form.slackToken && form.slackChannelId)
       integrations.push({ source: 'slack', config: { token: form.slackToken, channelId: form.slackChannelId } })
 
-    await fetch('/api/clients', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: form.name, tone: form.tone, language: form.language, format: form.format, integrations }),
-    })
-    setSaving(false); setSaved(true)
-    setTimeout(() => { setSaved(false); router.push('/dashboard') }, 1200)
+    try {
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, tone: form.tone, language: form.language, format: form.format, integrations }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error((data as { error?: string }).error ?? `Request failed (${res.status})`)
+      }
+      setSaved(true)
+      setTimeout(() => { setSaved(false); router.push('/dashboard') }, 1200)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save client')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const field = (label: string, key: keyof FormState, placeholder?: string) => (
@@ -110,6 +122,9 @@ export default function SettingsPage() {
         <div style={{ flex: 1 }}>{field('Channel ID', 'slackChannelId', 'C1234567890')}</div>
       </div>
 
+      {error && (
+        <p style={{ marginTop: '12px', color: '#c0392b', fontSize: '13px' }}>{error}</p>
+      )}
       <button
         onClick={save}
         disabled={saving || !form.name.trim()}

@@ -12,10 +12,14 @@ export async function fetchJiraActivity(
   dateRange: DateRange
 ): Promise<ConnectorResult> {
   const { baseUrl, email, apiToken, projectKey } = config
+  const PROJECT_KEY_RE = /^[A-Z][A-Z0-9_]{1,9}$/
+  if (!PROJECT_KEY_RE.test(projectKey)) {
+    return { source: 'jira', items: [], error: 'Invalid projectKey format' }
+  }
   const auth = Buffer.from(`${email}:${apiToken}`).toString('base64')
   const from = dateRange.from.toISOString().split('T')[0]
   const to = dateRange.to.toISOString().split('T')[0]
-  const jql = `project = ${projectKey} AND status = Done AND updated >= "${from}" AND updated <= "${to}"`
+  const jql = `project = "${projectKey}" AND status = Done AND updated >= "${from}" AND updated <= "${to}"`
 
   try {
     const res = await fetch(

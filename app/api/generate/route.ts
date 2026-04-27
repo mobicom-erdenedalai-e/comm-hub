@@ -6,17 +6,23 @@ import { aggregate, type AggregatorConfig } from '@/lib/aggregator'
 import { buildPrompt } from '@/lib/prompt-engine'
 import { generateWithGitHubModels } from '@/lib/github-models'
 import { parseMeetingTranscript } from '@/lib/connectors/meeting'
+import { env } from '@/lib/env'
 import type { GenerateRequest, ToneConfig } from '@/lib/types'
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body: GenerateRequest & { transcript?: string } = await req.json()
+  let body: GenerateRequest & { transcript?: string }
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
   const { clientId, artifactType, dateRange, question, transcript } = body
 
-  const client = await prisma.client.findUnique({
-    where: { id: clientId },
+  const client = await prisma.client.findFirst({
+    where: { id: clientId, userId: session.user.id },
     include: { integrations: true },
   })
   if (!client) return NextResponse.json({ error: 'Client not found' }, { status: 404 })
@@ -28,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   const config: AggregatorConfig = {}
-  const githubToken = process.env.GITHUB_TOKEN!
+  const githubToken = env.GITHUB_TOKEN
   for (const integration of client.integrations) {
     if (integration.source === 'github') {
       const c = integration.config as { owner: string; repo: string }
